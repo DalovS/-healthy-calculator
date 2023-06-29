@@ -15,14 +15,14 @@ namespace ITM
             this.BackgroundImage = Properties.Resources.Apple_Health_study_July_2022_hero_jpg_og;
             this.BackgroundImageLayout = ImageLayout.Stretch;
             DataTable bmiTable = new DataTable();
-            bmiTable.Columns.Add("Категория", typeof(string));
-            bmiTable.Columns.Add("Граници", typeof(string));
+            bmiTable.Columns.Add("ГЉГ ГІГҐГЈГ®Г°ГЁГї", typeof(string));
+            bmiTable.Columns.Add("ГѓГ°Г Г­ГЁГ¶ГЁ", typeof(string));
 
-            bmiTable.Rows.Add("Поднормено", "Под 18.9");
-            bmiTable.Rows.Add("Норма", "19 - 24.9");
-            bmiTable.Rows.Add("Наднорма", "25.0 - 29.9");
-            bmiTable.Rows.Add("Затлъстяване", "30.0 - 34.9");
-            bmiTable.Rows.Add("Тежко затлъстяване", "Над 40");
+            bmiTable.Rows.Add("ГЏГ®Г¤Г­Г®Г°Г¬ГҐГ­Г®", "ГЏГ®Г¤ 18.9");
+            bmiTable.Rows.Add("ГЌГ®Г°Г¬Г ", "19 - 24.9");
+            bmiTable.Rows.Add("ГЌГ Г¤Г­Г®Г°Г¬Г ", "25.0 - 29.9");
+            bmiTable.Rows.Add("Г‡Г ГІГ«ГєГ±ГІГїГўГ Г­ГҐ", "30.0 - 34.9");
+            bmiTable.Rows.Add("Г’ГҐГ¦ГЄГ® Г§Г ГІГ«ГєГ±ГІГїГўГ Г­ГҐ", "ГЌГ Г¤ 40");
 
             dataGridView1.DataSource = bmiTable;
             this.FormBorderStyle = FormBorderStyle.Sizable;
@@ -54,19 +54,19 @@ namespace ITM
 
                 switch (category)
                 {
-                    case "Поднормено":
+                    case "ГЏГ®Г¤Г­Г®Г°Г¬ГҐГ­Г®":
                         color = Color.Blue;
                         break;
-                    case "Норма":
+                    case "ГЌГ®Г°Г¬Г ":
                         color = Color.Green;
                         break;
-                    case "Наднорма":
+                    case "ГЌГ Г¤Г­Г®Г°Г¬Г ":
                         color = Color.Yellow;
                         break;
-                    case "Затлъстяване":
+                    case "Г‡Г ГІГ«ГєГ±ГІГїГўГ Г­ГҐ":
                         color = Color.Orange;
                         break;
-                    case "Тежко затлъстяване":
+                    case "Г’ГҐГ¦ГЄГ® Г§Г ГІГ«ГєГ±ГІГїГўГ Г­ГҐ":
                         color = Color.Red;
                         break;
                     default:
@@ -87,20 +87,20 @@ namespace ITM
             int age;
             if (!int.TryParse(txtBoxAge.Text, out age) || age <= 0)
             {
-                MessageBox.Show("Моля въведете коректна възраст - цяло число");
+                MessageBox.Show("ГЊГ®Г«Гї ГўГєГўГҐГ¤ГҐГІГҐ ГЄГ®Г°ГҐГЄГІГ­Г  ГўГєГ§Г°Г Г±ГІ - Г¶ГїГ«Г® Г·ГЁГ±Г«Г®");
                 return;
             }
             // Check if the input values are valid
             if (!double.TryParse(textBoxKG.Text, out weight) || !double.TryParse(textBoxHight.Text, out height))
             {
-                MessageBox.Show("Моля въведете коректни данни за височина и тегло.");
+                MessageBox.Show("ГЊГ®Г«Гї ГўГєГўГҐГ¤ГҐГІГҐ ГЄГ®Г°ГҐГЄГІГ­ГЁ Г¤Г Г­Г­ГЁ Г§Г  ГўГЁГ±Г®Г·ГЁГ­Г  ГЁ ГІГҐГЈГ«Г®.");
                 return;
             }
 
             // Check if the input values are greater than 0
-            if (weight <= 0 || height <= 0)
+            if (weight <= 0 || height <= 0 || height > 210 || weight > 150 )
             {
-                MessageBox.Show("Моля въведете стойности по-високи от 0.");
+                MessageBox.Show("ГЊГ®Г«Гї ГўГєГўГҐГ¤ГҐГІГҐ Г±ГІГ®Г©Г­Г®Г±ГІГЁ ГЇГ®-ГўГЁГ±Г®ГЄГЁ Г®ГІ 0.");
                 return;
             }
             weight = double.Parse(textBoxKG.Text);
@@ -117,9 +117,9 @@ namespace ITM
                 double bodyFat = (1.20 * bmi) + (0.23 * age) - 16.2;
                 txtBodyFat.Text = bodyFat.ToString("N1") + "%";
                 double bodyMass = weight * (1-bodyFat/100);
-                txtBodyMass.Text = bodyMass.ToString("N1") + "кг";
+                txtBodyMass.Text = bodyMass.ToString("N1") + "ГЄГЈ";
                 bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-                txtBMR.Text = bmr.ToString("N1")+ "kcal/ден";
+                txtBMR.Text = bmr.ToString("N1")+ "kcal/Г¤ГҐГ­";
             }
             else if (radioButton2.Checked)
             {
@@ -127,9 +127,9 @@ namespace ITM
                 double bodyFat = (1.20 * bmi) +(0.23 * age) - 5.4;
                 txtBodyFat.Text = bodyFat.ToString("N1") + "%";
                 double bodyMass = weight * (1 - bodyFat / 100);
-                txtBodyMass.Text = bodyMass.ToString("N1")+"кг";
+                txtBodyMass.Text = bodyMass.ToString("N1")+"ГЄГЈ";
                 bmr = 10 * weight + 6.25 * height - 5 * age - 161;
-                txtBMR.Text = bmr.ToString("N1") + "kcal/ден";
+                txtBMR.Text = bmr.ToString("N1") + "kcal/Г¤ГҐГ­";
             }
 
          // Change the color of the txtResult text box based on the BMI value
