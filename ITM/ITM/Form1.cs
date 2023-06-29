@@ -7,6 +7,8 @@ namespace ITM
 {
     public partial class Form : System.Windows.Forms.Form
     {
+        private TextBox[] textboxes;
+        private int currentIndex;
         public Form()
         {
 
@@ -14,15 +16,33 @@ namespace ITM
 
             this.BackgroundImage = Properties.Resources.Apple_Health_study_July_2022_hero_jpg_og;
             this.BackgroundImageLayout = ImageLayout.Stretch;
-            DataTable bmiTable = new DataTable();
-            bmiTable.Columns.Add("Êàòåãîðèÿ", typeof(string));
-            bmiTable.Columns.Add("Ãðàíèöè", typeof(string));
+            //Key next textbox
+            textboxes = new TextBox[] { textBoxKG, textBoxHight, txtBoxAge };
+            foreach (TextBox textbox in textboxes)
+            {
+                textbox.KeyDown += textBox_KeyDown;
+            }
 
-            bmiTable.Rows.Add("Ïîäíîðìåíî", "Ïîä 18.9");
-            bmiTable.Rows.Add("Íîðìà", "19 - 24.9");
-            bmiTable.Rows.Add("Íàäíîðìà", "25.0 - 29.9");
-            bmiTable.Rows.Add("Çàòëúñòÿâàíå", "30.0 - 34.9");
-            bmiTable.Rows.Add("Òåæêî çàòëúñòÿâàíå", "Íàä 40");
+            // Настройте първоначалния индекс на текущото поле
+            currentIndex = 0;
+
+            // Задайте фокуса на първото текстово поле
+            textboxes[currentIndex].Focus();
+            /* textBoxKG.KeyDown += textBox_KeyDown;
+             textBoxHight.KeyDown += textBox_KeyDown;
+             txtBoxAge.KeyDown+= textBox_KeyDown;
+             this.ActiveControl = textBoxKG;*/
+            //Create BMI table
+            DataTable bmiTable = new DataTable();
+            bmiTable.Columns.Add("Категория", typeof(string));
+            bmiTable.Columns.Add("Граници", typeof(string));
+
+            bmiTable.Rows.Add("Поднормено", "Под 18.5");
+            bmiTable.Rows.Add("Норма", "19 - 24.9");
+            bmiTable.Rows.Add("Наднорма", "25.0 - 29.9");
+            bmiTable.Rows.Add("Затлъстяване I степен", "30.0 - 34.9");
+            bmiTable.Rows.Add("Затлъстяване II степен", "35.0 - 39.9");
+            bmiTable.Rows.Add("Затлъстяване III степен", "Над 40");
 
             dataGridView1.DataSource = bmiTable;
             this.FormBorderStyle = FormBorderStyle.Sizable;
@@ -54,20 +74,23 @@ namespace ITM
 
                 switch (category)
                 {
-                    case "Ïîäíîðìåíî":
+                    case "Поднормено":
                         color = Color.Blue;
                         break;
-                    case "Íîðìà":
+                    case "Норма":
                         color = Color.Green;
                         break;
-                    case "Íàäíîðìà":
+                    case "Наднорма":
                         color = Color.Yellow;
                         break;
-                    case "Çàòëúñòÿâàíå":
+                    case "Затлъстяване I степен":
                         color = Color.Orange;
                         break;
-                    case "Òåæêî çàòëúñòÿâàíå":
+                    case "Затлъстяване II степен":
                         color = Color.Red;
+                        break;
+                    case "Затлъстяване III степен":
+                        color = Color.Purple;
                         break;
                     default:
                         color = Color.White;
@@ -85,22 +108,27 @@ namespace ITM
           
             textBoxResult.ReadOnly = true;
             int age;
-            if (!int.TryParse(txtBoxAge.Text, out age) || age <= 0)
-            {
-                MessageBox.Show("Ìîëÿ âúâåäåòå êîðåêòíà âúçðàñò - öÿëî ÷èñëî");
-                return;
-            }
+            
             // Check if the input values are valid
             if (!double.TryParse(textBoxKG.Text, out weight) || !double.TryParse(textBoxHight.Text, out height))
             {
-                MessageBox.Show("Ìîëÿ âúâåäåòå êîðåêòíè äàííè çà âèñî÷èíà è òåãëî.");
+                MessageBox.Show("Моля въведете коректни данни за височина, тегло и възраст!");
                 return;
             }
-
-            // Check if the input values are greater than 0
-            if (weight <= 0 || height <= 0 || height > 210 || weight > 150 )
+            if (!int.TryParse(txtBoxAge.Text, out age) || age <= 0)
             {
-                MessageBox.Show("Ìîëÿ âúâåäåòå ñòîéíîñòè ïî-âèñîêè îò 0.");
+                MessageBox.Show("Моля въведете коректна възраст - цяло число!");
+                return;
+            }
+            if (weight < 30 || weight > 150 || height < 100 || height > 230)
+            {
+                MessageBox.Show("Моля въведете коректни стойности за тегло и височина!");
+                return;
+            }
+            // Check if the input values are greater than 0
+            if (weight <= 0 || height <= 0)
+            {
+                MessageBox.Show("Моля въведете стойности по-високи от 0.");
                 return;
             }
             weight = double.Parse(textBoxKG.Text);
@@ -117,9 +145,9 @@ namespace ITM
                 double bodyFat = (1.20 * bmi) + (0.23 * age) - 16.2;
                 txtBodyFat.Text = bodyFat.ToString("N1") + "%";
                 double bodyMass = weight * (1-bodyFat/100);
-                txtBodyMass.Text = bodyMass.ToString("N1") + "êã";
+                txtBodyMass.Text = bodyMass.ToString("N1") + "кг";
                 bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-                txtBMR.Text = bmr.ToString("N1")+ "kcal/äåí";
+                txtBMR.Text = bmr.ToString("N1")+ "kcal/ден";
             }
             else if (radioButton2.Checked)
             {
@@ -127,29 +155,29 @@ namespace ITM
                 double bodyFat = (1.20 * bmi) +(0.23 * age) - 5.4;
                 txtBodyFat.Text = bodyFat.ToString("N1") + "%";
                 double bodyMass = weight * (1 - bodyFat / 100);
-                txtBodyMass.Text = bodyMass.ToString("N1")+"êã";
+                txtBodyMass.Text = bodyMass.ToString("N1")+"кг";
                 bmr = 10 * weight + 6.25 * height - 5 * age - 161;
-                txtBMR.Text = bmr.ToString("N1") + "kcal/äåí";
+                txtBMR.Text = bmr.ToString("N1") + "kcal/ден";
             }
 
          // Change the color of the txtResult text box based on the BMI value
-            if (bmi >= 9 && bmi <= 18)
+            if (bmi >= 9 && bmi <= 18.5)
             {
                     textBoxResult.BackColor = Color.Blue;
             }
-            else if (bmi > 18 && bmi <= 23)
+            else if (bmi >= 19 && bmi <= 24.9)
             {
                     textBoxResult.BackColor = Color.Green;
             }
-            else if (bmi > 23 && bmi <= 29)
+            else if (bmi >= 25 && bmi <= 29.9)
                 {
                     textBoxResult.BackColor = Color.Yellow;
                 }
-            else if (bmi > 29 && bmi <= 38)
+            else if (bmi >= 30 && bmi <= 34.9)
             {
                     textBoxResult.BackColor = Color.Orange;
             }
-            else if (bmi > 38 && bmi <= 65)
+            else if (bmi >= 35 && bmi <= 39.9)
             {
                  textBoxResult.BackColor = Color.Red;
             }
@@ -159,10 +187,32 @@ namespace ITM
             }
 
         }
+        private void textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
 
+                // Преминете към следващото текстово поле
+                currentIndex++;
+
+                // Ако сме достигнали последното поле, нулирайте индекса, за да започнете отначало
+                if (currentIndex >= textboxes.Length)
+                {
+                    currentIndex = 0;
+                  
+                }
+                textboxes[currentIndex].Focus();
+            }
+        }
         private void textBoxResult_MouseClick(object sender, MouseEventArgs e)
         {
             pictureBox1.Visible = true;   
+        }
+
+        private void txtBodyMass_MouseClick(object sender, MouseEventArgs e)
+        {
+            pictureBox2.Visible = true;
         }
     }
 }
