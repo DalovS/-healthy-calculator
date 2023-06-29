@@ -23,15 +23,12 @@ namespace ITM
                 textbox.KeyDown += textBox_KeyDown;
             }
 
-            // Настройте първоначалния индекс на текущото поле
+           
             currentIndex = 0;
 
-            // Задайте фокуса на първото текстово поле
+          
             textboxes[currentIndex].Focus();
-            /* textBoxKG.KeyDown += textBox_KeyDown;
-             textBoxHight.KeyDown += textBox_KeyDown;
-             txtBoxAge.KeyDown+= textBox_KeyDown;
-             this.ActiveControl = textBoxKG;*/
+       
             //Create BMI table
             DataTable bmiTable = new DataTable();
             bmiTable.Columns.Add("Категория", typeof(string));
@@ -64,14 +61,12 @@ namespace ITM
             pictureBox2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
             dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right /*| AnchorStyles.Bottom*/;
         }
-
         private void dataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.ColumnIndex == 1) // Range column
             {
                 string category = (string)dataGridView1.Rows[e.RowIndex].Cells[0].Value;
                 Color color;
-
                 switch (category)
                 {
                     case "Поднормено":
@@ -96,19 +91,14 @@ namespace ITM
                         color = Color.White;
                         break;
                 }
-
                 e.CellStyle.BackColor = color;
             }
         }
-
-
         private void buttonResult_Click(object sender, EventArgs e)
         {
-            double weight, height, bmi,bmr;
-          
+            double weight, height, bmi,bmr;          
             textBoxResult.ReadOnly = true;
-            int age;
-            
+            int age;           
             // Check if the input values are valid
             if (!double.TryParse(textBoxKG.Text, out weight) || !double.TryParse(textBoxHight.Text, out height))
             {
@@ -136,10 +126,7 @@ namespace ITM
             bmi = weight / Math.Pow(height / 100, 2);
             textBoxResult.Text = bmi.ToString("N1");
             TextBox txtBodyFat = this.txtBodyFat;
-            
-
-            txtBodyFat.ReadOnly = true;
-         
+            txtBodyFat.ReadOnly = true;         
             if (radioButton1.Checked)
             {
                 double bodyFat = (1.20 * bmi) + (0.23 * age) - 16.2;
@@ -151,7 +138,6 @@ namespace ITM
             }
             else if (radioButton2.Checked)
             {
-
                 double bodyFat = (1.20 * bmi) +(0.23 * age) - 5.4;
                 txtBodyFat.Text = bodyFat.ToString("N1") + "%";
                 double bodyMass = weight * (1 - bodyFat / 100);
@@ -159,7 +145,6 @@ namespace ITM
                 bmr = 10 * weight + 6.25 * height - 5 * age - 161;
                 txtBMR.Text = bmr.ToString("N1") + "kcal/ден";
             }
-
          // Change the color of the txtResult text box based on the BMI value
             if (bmi >= 9 && bmi <= 18.5)
             {
@@ -185,7 +170,6 @@ namespace ITM
             {
                    textBoxResult.BackColor = Color.Purple;
             }
-
         }
         private void textBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -199,8 +183,7 @@ namespace ITM
                 // Ако сме достигнали последното поле, нулирайте индекса, за да започнете отначало
                 if (currentIndex >= textboxes.Length)
                 {
-                    currentIndex = 0;
-                  
+                    currentIndex = 0;              
                 }
                 textboxes[currentIndex].Focus();
             }
@@ -209,7 +192,6 @@ namespace ITM
         {
             pictureBox1.Visible = true;   
         }
-
         private void txtBodyMass_MouseClick(object sender, MouseEventArgs e)
         {
             pictureBox2.Visible = true;
