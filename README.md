@@ -1,3 +1,3 @@
 # CSharp-healthy-calculator
 Not completed. Must add data input validation.
-Next step is adding database in app location.
+looking for ideas to improve the app, I plan to use another kind of database and it could be a better user interface.
